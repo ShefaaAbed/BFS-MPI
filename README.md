@@ -14,13 +14,13 @@ Then the output should be the sequence of actions that will lead to the goal:
 (0 1 2 4 4 5 5 7 8)
 
 The output is:
-1. Path of the solution (print the 8-puzzle).
+1. The initial state (print the 8-puzzle).
 
-2. Number of generated nodes.
+2. Depth value.
 
-3. Number of expanded nodes.
+3. Cost value.
 
-4. The moves/actions (Up,Down,Left and Right).
+4. Time taken by the program.
 
 
 	
