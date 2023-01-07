@@ -8,14 +8,14 @@
 using namespace std;
 class State {
 public:
-	int a[9];
+	int puzzle[9];
 	State() {}
 	void generate() // generate the 8-puzzle problem to solve 
 	{
 		for (int i = 0; i < 9; i++)
 		{
 			cout << "enter the num: " << i << endl;
-			cin >> a[i];
+			cin >> puzzle[i];
 		}
 	}
 
@@ -24,26 +24,26 @@ public:
 		cout << "-----------------" << endl;
 		for (int i = 0; i < 9; i++) {
 			if (i > 0 && i % 3 == 0) cout << endl;
-			cout << a[i] << "\t";
+			cout << puzzle[i] << "\t";
 		}
 		cout << endl << "-----------------" << endl;
 	}
 	int findzero() //find the index of the space (to move it in order to solve the problem)
 	{
 		for (int i = 0; i < 9; i++) {
-			if (a[i] == 0)
+			if (puzzle[i] == 0)
 				return i;
 		}
 		return 0;
 	}
-	State exch(int i, int j) 
+	State exchange(int i, int j) 
 	{ //exchange the two numbers in the Node 
 		State b;
 		for (int k = 0; k < 9; k++)
-			b.a[k] = a[k];
-		int t = b.a[i];
-		b.a[i] = b.a[j];
-		b.a[j] = t;
+			b.puzzle[k] = puzzle[k];
+		int t = b.puzzle[i];
+		b.puzzle[i] = b.puzzle[j];
+		b.puzzle[j] = t;
 		return b;
 	}
 
@@ -51,7 +51,7 @@ public:
 	int equal(State s) 
 	{
 		for (int i = 0; i < 9; i++) {
-			if (a[i] != s.a[i]) return 0;
+			if (puzzle[i] != s.puzzle[i]) return 0;
 		}
 		return 1;
 	}
@@ -63,10 +63,10 @@ public:
 	4	4	5
 	5	7	8
 	*/
-		int g[9] = { 0,1,2,4,4,5,5,7,8 };
+		int goalstate[9] = { 0,1,2,4,4,5,5,7,8 };
 
 		for (int i = 0; i < 9; i++) {
-			if (a[i] != g[i]) return 0;
+			if (puzzle[i] != goalstate[i]) return 0;
 		}
 		return 1;
 	}
@@ -77,33 +77,33 @@ class Node
 {
 public:
 	State s;
-	Node* father;
+	Node* startnode;
 	int action, cost, depth;
 	Node() 
-	{ //default constructor the root node has no father and no action
+	{ //default constructor the root node has no startnode and no action
 		State s;
-		father = NULL;
+		startnode = NULL;
 		action = -1;
 		cost = 1;
 		depth = 0;
 	}
-	Node(State _s, Node* _father, int _action, int _depth) 
+	Node(State _s, Node* _startnode, int _action, int _depth) 
 	{
 		s = _s;
-		father = _father;
+		startnode = _startnode;
 		action = _action;
 		depth = _depth;
 	}
 	Node copy() 
 	{ //copy the node 
-		Node b;
+		Node copynode;
 		for (int i = 0; i < 9; i++)
-			b.s.a[i] = s.a[i];
-		b.father = father;
-		b.action = action;
-		b.depth = depth;
+			copynode.s.puzzle[i] = s.puzzle[i];
+		copynode.startnode = startnode;
+		copynode.action = action;
+		copynode.depth = depth;
 
-		return b;
+		return copynode;
 	}
 	void print() 
 	{
@@ -114,10 +114,10 @@ public:
 	void expand(deque<Node>* deque) 
 	{
 		int p = s.findzero();
-		moveup(deque, p);
-		movedown(deque, p);
-		moveright(deque, p);
-		moveleft(deque, p);
+		up(deque, p);
+		down(deque, p);
+		right(deque, p);
+		left(deque, p);
 	}
 	int expanded(deque<State>* deque) 
 	{  
@@ -129,22 +129,22 @@ public:
 		}
 		return 0;
 	}
-	void moveup(deque<Node>* deque, int p)
+	void up(deque<Node>* deque, int p)
 	{
 		//moveup    (0)
 		if ((p != 0 && p != 1 && p != 2) && action != 1) {
-			Node n(s.exch(p, p - 3), this, 0, depth + 1);
+			Node n(s.exchange(p, p - 3), this, 0, depth + 1);
 			(*deque).push_back(n);
 			//cout<<"UP"<<endl;
 			//n.s.print();
 		}
 		
 	}
-	void movedown(deque<Node>* deque, int p)
+	void down(deque<Node>* deque, int p)
 	{
 		//movedown     (1)
 		if ((p != 6 && p != 7 && p != 8) && action != 0) {
-			Node n(s.exch(p, p + 3), this, 1, depth + 1);
+			Node n(s.exchange(p, p + 3), this, 1, depth + 1);
 			(*deque).push_back(n);
 			//cout<<"DOWN"<<endl;
 			//n.s.print();
@@ -152,22 +152,22 @@ public:
 		
 	}
 
-	void moveright(deque<Node>* deque, int p)
+	void right(deque<Node>* deque, int p)
 	{
 		//moveright (2)
 		if ((p != 2 && p != 5 && p != 8) && action != 3) {
-			Node n(s.exch(p, p + 1), this, 2, depth + 1);
+			Node n(s.exchange(p, p + 1), this, 2, depth + 1);
 			(*deque).push_back(n);
 			//cout<<"RIGHT"<<endl;
 			//n.s.print();
 		}
 		
 	}
-	void moveleft(deque<Node>* deque, int p)
+	void left(deque<Node>* deque, int p)
 	{
 		//moveleft     (3)
 		if ((p != 0 && p != 3 && p != 6) && action != 2) {
-			Node n(s.exch(p, p - 1), this, 3, depth + 1);
+			Node n(s.exchange(p, p - 1), this, 3, depth + 1);
 			(*deque).push_back(n);
 			//cout<<"LEFT"<<endl;
 			//n.s.print();
