@@ -1,5 +1,7 @@
 # BFS-Breadth-First-Search
 
+In src file you can find the codes.
+
 Serial part:
 
 This code is to solve the 8-puzzle problem using the breadth first search algorithm.
