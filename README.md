@@ -52,5 +52,4 @@ The output is:
 
 
 NOTE:
-   To compile the mpi file: mpic++ filename.cpp -o namefile 
-   To run the mpi file: mpirun -np 5 ./filename
+   To compile the mpi file: mpic++ filename.cpp -o namefile and to run the mpi file: mpirun -np 5 ./filename
